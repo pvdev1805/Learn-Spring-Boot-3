@@ -3,6 +3,8 @@ package com.learnspring.hello_spring.service;
 import com.learnspring.hello_spring.dto.request.UserCreationRequest;
 import com.learnspring.hello_spring.dto.request.UserUpdateRequest;
 import com.learnspring.hello_spring.entity.User;
+import com.learnspring.hello_spring.exception.AppException;
+import com.learnspring.hello_spring.exception.ErrorCode;
 import com.learnspring.hello_spring.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ public class UserService {
         User user = new User();
 
         if(userRepository.existsByUsername(request.getUsername())){
-            throw new RuntimeException("Username already exists!");
+            throw new AppException(ErrorCode.USER_EXISTS);
         }
 
         user.setUsername(request.getUsername());

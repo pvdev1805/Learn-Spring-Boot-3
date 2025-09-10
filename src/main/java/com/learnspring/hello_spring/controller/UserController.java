@@ -1,5 +1,6 @@
 package com.learnspring.hello_spring.controller;
 
+import com.learnspring.hello_spring.dto.request.ApiResponse;
 import com.learnspring.hello_spring.dto.request.UserCreationRequest;
 import com.learnspring.hello_spring.dto.request.UserUpdateRequest;
 import com.learnspring.hello_spring.entity.User;
@@ -17,8 +18,12 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    User createUser(@RequestBody @Valid UserCreationRequest request){
-        return userService.createUser(request);
+    ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request){
+        ApiResponse<User> apiResponse = new ApiResponse<>();
+
+        apiResponse.setResult(userService.createUser(request));
+
+        return apiResponse;
     }
 
     // Retrieve all users
