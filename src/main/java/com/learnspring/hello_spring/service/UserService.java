@@ -4,6 +4,7 @@ import com.learnspring.hello_spring.dto.request.UserCreationRequest;
 import com.learnspring.hello_spring.dto.request.UserUpdateRequest;
 import com.learnspring.hello_spring.dto.response.UserResponse;
 import com.learnspring.hello_spring.entity.User;
+import com.learnspring.hello_spring.enums.Role;
 import com.learnspring.hello_spring.exception.AppException;
 import com.learnspring.hello_spring.exception.ErrorCode;
 import com.learnspring.hello_spring.mapper.UserMapper;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -24,22 +26,28 @@ import java.util.List;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    PasswordEncoder passwordEncoder;
 
-    public User createUser(UserCreationRequest request){
+    public UserResponse createUser(UserCreationRequest request){
         if(userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTS);
         }
 
         User user = userMapper.toUser(request);
 
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        return userRepository.save(user);
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+
+        user.setRoles(roles);
+
+        return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    public List<User> getUsers(){
-        return userRepository.findAll();
+    public List<UserResponse> getUsers(){
+//        return userRepository.findAll().stream().map(user -> userMapper.toUserResponse(user)).toList();
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 
     public UserResponse getUser(String id){
