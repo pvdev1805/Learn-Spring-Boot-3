@@ -1,27 +1,27 @@
 package com.learnspring.hello_spring.exception;
 
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+
+@Getter
 public enum ErrorCode {
-    UNCATEGORIZED_EXCEPTION(999, "Uncategorized error"),
-    USER_EXISTS(1001, "User existed"),
-    USERNAME_INVALID(1002, "Username must be at least 3 characters long"),
-    INVALID_PASSWORD(1003, "Password must be at least 8 characters long"),
-    INVALID_KEY(1004, "Invalid key"),
-    USER_NOT_EXISTED(1005, "User not existed"),
-    UNAUTHENTICATED(1006, "Unauthenticated")
+    UNCATEGORIZED_EXCEPTION(999, "Uncategorized error", HttpStatus.INTERNAL_SERVER_ERROR),
+    USER_EXISTS(1001, "User existed", HttpStatus.BAD_REQUEST),
+    USERNAME_INVALID(1002, "Username must be at least 3 characters long", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(1003, "Password must be at least 8 characters long", HttpStatus.BAD_REQUEST),
+    INVALID_KEY(1004, "Invalid key", HttpStatus.BAD_REQUEST),
+    USER_NOT_EXISTED(1005, "User not existed", HttpStatus.NOT_FOUND),
+    UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
+    UNAUTHORIZED(1007, "You do not have permissions", HttpStatus.FORBIDDEN)
     ;
     private int code;
     private String message;
+    private HttpStatusCode statusCode;
 
-    ErrorCode(int code, String message) {
+    ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
         this.message = message;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMessage() {
-        return message;
+        this.statusCode = statusCode;
     }
 }
