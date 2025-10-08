@@ -8,6 +8,7 @@ import com.learnspring.hello_spring.enums.Role;
 import com.learnspring.hello_spring.exception.AppException;
 import com.learnspring.hello_spring.exception.ErrorCode;
 import com.learnspring.hello_spring.mapper.UserMapper;
+import com.learnspring.hello_spring.repository.RoleRepository;
 import com.learnspring.hello_spring.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import java.util.List;
 @Slf4j
 public class UserService {
     UserRepository userRepository;
+    RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
 
@@ -50,7 +52,8 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('APPROVE_POST')")
     public List<UserResponse> getUsers(){
         log.info("In method get Users");
 //        return userRepository.findAll().stream().map(user -> userMapper.toUserResponse(user)).toList();
@@ -76,6 +79,10 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
         userMapper.updateUser(user, request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(roles));
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
