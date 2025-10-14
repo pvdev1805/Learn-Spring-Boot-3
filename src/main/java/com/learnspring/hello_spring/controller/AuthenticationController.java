@@ -3,6 +3,7 @@ package com.learnspring.hello_spring.controller;
 import com.learnspring.hello_spring.dto.request.ApiResponse;
 import com.learnspring.hello_spring.dto.request.AuthenticationRequest;
 import com.learnspring.hello_spring.dto.request.IntrospectRequest;
+import com.learnspring.hello_spring.dto.request.LogoutRequest;
 import com.learnspring.hello_spring.dto.response.AuthenticationResponse;
 import com.learnspring.hello_spring.dto.response.IntrospectResponse;
 import com.learnspring.hello_spring.service.AuthenticationService;
@@ -39,5 +40,11 @@ public class AuthenticationController {
                 .<IntrospectResponse>builder()
                 .result(result)
                 .build();
+    }
+
+    @PostMapping("/logout")
+    ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ApiResponse.<Void>builder().build();
     }
 }
