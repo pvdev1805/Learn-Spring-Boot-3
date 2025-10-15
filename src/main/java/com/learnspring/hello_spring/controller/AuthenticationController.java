@@ -1,9 +1,6 @@
 package com.learnspring.hello_spring.controller;
 
-import com.learnspring.hello_spring.dto.request.ApiResponse;
-import com.learnspring.hello_spring.dto.request.AuthenticationRequest;
-import com.learnspring.hello_spring.dto.request.IntrospectRequest;
-import com.learnspring.hello_spring.dto.request.LogoutRequest;
+import com.learnspring.hello_spring.dto.request.*;
 import com.learnspring.hello_spring.dto.response.AuthenticationResponse;
 import com.learnspring.hello_spring.dto.response.IntrospectResponse;
 import com.learnspring.hello_spring.service.AuthenticationService;
@@ -38,6 +35,14 @@ public class AuthenticationController {
         IntrospectResponse result = authenticationService.introspect(request);
         return ApiResponse
                 .<IntrospectResponse>builder()
+                .result(result)
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    ApiResponse<AuthenticationResponse> refresh(@RequestBody RefreshRequest request) throws ParseException, JOSEException {
+        var result = authenticationService.refreshToken(request);
+        return ApiResponse.<AuthenticationResponse>builder()
                 .result(result)
                 .build();
     }
