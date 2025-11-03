@@ -28,7 +28,7 @@ public class Fee {
     @Column(name = "is_paid", nullable = false)
     boolean isPaid;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", referencedColumnName = "id", unique = true)
     Student student;
 }
